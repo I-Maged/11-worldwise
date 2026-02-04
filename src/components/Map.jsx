@@ -1,9 +1,10 @@
 import Button from './Button'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { useCities } from '../contexts/usecities'
 import { useGeolocation } from '../hooks/useGeolocation'
+import { useUrlPosition } from '../hooks/useUrlPosition'
 
 import {
   MapContainer,
@@ -19,22 +20,20 @@ import styles from './Map.module.css'
 const Map = () => {
   const { cities } = useCities()
   const [mapPosition, setMapPosition] = useState([40, -3])
-  const [searchParams] = useSearchParams()
   const {
     isLoading: isLoadingPosition,
     position: geolocationPosition,
     getPosition,
   } = useGeolocation()
 
-  const mapLat = searchParams.get('lat')
-  const mapLng = searchParams.get('lng')
+  const { lat, lng } = useUrlPosition()
 
   useEffect(() => {
     function changePosition() {
-      if (mapLat && mapLng) setMapPosition([mapLat, mapLng])
+      if (lat && lng) setMapPosition([lat, lng])
     }
     changePosition()
-  }, [mapLat, mapLng])
+  }, [lat, lng])
 
   useEffect(() => {
     function changePosition() {
