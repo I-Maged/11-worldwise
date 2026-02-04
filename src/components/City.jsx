@@ -1,6 +1,12 @@
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
-/* import styles from './City.module.css'
+import { useCities } from '../contexts/usecities'
+
+import BackButton from './BackButton'
+import Spinner from './Spinner'
+
+import styles from './City.module.css'
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat('en', {
@@ -8,33 +14,22 @@ const formatDate = (date) =>
     month: 'long',
     year: 'numeric',
     weekday: 'long',
-  }).format(new Date(date)) */
+  }).format(new Date(date))
 
 function City() {
   const { id } = useParams()
 
-  const [searchParams] = useSearchParams()
+  const { currentCity, getCity, isLoading } = useCities()
 
-  const lat = searchParams.get('lat')
-  const lng = searchParams.get('lng')
+  useEffect(() => {
+    getCity(id)
+  }, [id])
 
-  // TEMP DATA
-  const currentCity = {
-    cityName: 'Lisbon',
-    emoji: '🇵🇹',
-    date: '2027-10-31T15:59:59.138Z',
-    notes: 'My favorite city so far!',
-  }
+  const { cityName, emoji, date, notes } = currentCity
 
-  // const { cityName, emoji, date, notes } = currentCity;
+  if (isLoading) return <Spinner />
 
   return (
-    <h1>
-      {currentCity.cityName} {id}, position: {lat}, {lng}
-    </h1>
-  )
-
-  /* return (
     <div className={styles.city}>
       <div className={styles.row}>
         <h6>City name</h6>
@@ -59,18 +54,21 @@ function City() {
         <h6>Learn more</h6>
         <a
           href={`https://en.wikipedia.org/wiki/${cityName}`}
-          target="_blank"
-          rel="noreferrer"
+          target='_blank'
+          rel='noreferrer'
         >
           Check out {cityName} on Wikipedia &rarr;
         </a>
       </div>
 
       <div>
-        <ButtonBack />
+        <BackButton />
       </div>
+      {/* <Button type='back' onClick={() => navigate(-1)}>
+        &larr; Back
+      </Button> */}
     </div>
-  ); */
+  )
 }
 
 export default City
